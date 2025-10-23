@@ -1,0 +1,34 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: jared_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - jared_db_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      DB_USER: postgres
+      DB_PASSWORD: 1234
+      DB_NAME: jared_db
+      DB_HOST: db
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  jared_db_data:
